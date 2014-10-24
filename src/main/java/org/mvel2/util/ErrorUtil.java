@@ -9,15 +9,20 @@ import org.mvel2.ErrorDetail;
 public class ErrorUtil {
   public static CompileException rewriteIfNeeded(CompileException caught, char[] outer, int outerCursor) {
     if (outer != caught.getExpr()) {
-      String innerExpr = new String(caught.getExpr()).substring(caught.getCursor());
-      caught.setExpr(outer);
-
-      String outerStr = new String(outer);
-
-      int newCursor = outerStr.substring(outerStr.indexOf(new String(caught.getExpr())))
-          .indexOf(innerExpr);
-
-      caught.setCursor(newCursor);
+      String caughtExpr = caught.getExpr();
+      if (caughtExpr==null) {
+        caught.setExpr("Unknown");
+      } else {
+        String innerExpr = new String(caught.getExpr()).substring(caught.getCursor());
+        caught.setExpr(outer);
+  
+        String outerStr = new String(outer);
+  
+        int newCursor = outerStr.substring(outerStr.indexOf(new String(caught.getExpr())))
+            .indexOf(innerExpr);
+  
+        caught.setCursor(newCursor);
+      }
     }
     return caught;
   }
